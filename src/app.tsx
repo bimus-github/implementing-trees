@@ -1,54 +1,54 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-import { getData, setData } from "./renderer";
+import { searchByProps, setData } from "./renderer";
+import { BTreeWithObject } from "./classes/BTreeWithObject";
+
+const tree = new BTreeWithObject(3);
 
 const App = () => {
-  const [dataArray, setDataArray] = React.useState<number[]>();
-  const [value, setValue] = React.useState<number>(0);
-  const [search, setSearch] = React.useState<number>(0);
-
-  React.useEffect(() => {
-    getData().then((data) => {
-      setDataArray(data);
-    });
-  }, []);
+  const [value, setValue] = React.useState<string>("");
+  const [searchByName, setSearchByName] = React.useState<string>("");
 
   const handleSave = async () => {
-    for (let i = 0; i < value; i++) {
-      await setData(i);
-    }
+    // tree.insert({
+    //   id: Math.random().toString(),
+    //   name: value,
+    //   code: Math.random().toString(),
+    // });
 
-    getData().then((data) => {
-      setDataArray(data);
+    // console.log(JSON.stringify(tree));
+
+    setData({
+      id: Math.random().toString(),
+      name: value,
+      code: Math.random().toString(),
     });
   };
 
-  const handleSearch = async () => {
-    const data = await getData();
-    if (data.includes(search)) {
-      console.log("data includes search");
-    }
+  const handleSearchByName = async () => {
+    const data = await searchByProps("name", searchByName);
+    console.log(data);
   };
 
   return (
     <div>
       <input
-        type="number"
+        type="text"
         placeholder="Enter number"
         value={value}
-        onChange={(e) => setValue(Number(e.target.value))}
+        onChange={(e) => setValue(e.target.value)}
       />
       <button onClick={handleSave}>Add to tree</button>
       <input
-        type="number"
+        type="text"
         placeholder="Enter number"
-        value={search}
-        onChange={(e) => setSearch(Number(e.target.value))}
+        value={searchByName}
+        onChange={(e) => setSearchByName(e.target.value)}
       />
-      <button onClick={handleSearch}>Search</button>
-      {dataArray?.map((item, index) => (
+      <button onClick={handleSearchByName}>SearchByName</button>
+      {/* {dataArray?.map((item, index) => (
         <div key={index}>{item}</div>
-      ))}
+      ))} */}
     </div>
   );
 };
